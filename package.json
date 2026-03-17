@@ -1,0 +1,57 @@
+{
+  "name": "@xesrevinu/opencode-jj-enforcer",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "OpenCode plugin that enforces jj over git when a workspace contains a .jj repository",
+  "main": "./dist/src/index.js",
+  "types": "./dist/src/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "default": "./dist/src/index.js"
+    }
+  },
+  "files": [
+    "dist/",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "opencode",
+    "opencode-plugin",
+    "jj",
+    "jujutsu",
+    "git",
+    "policy"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xesrevinu/opencode-jj-enforcer.git"
+  },
+  "bugs": {
+    "url": "https://github.com/xesrevinu/opencode-jj-enforcer/issues"
+  },
+  "homepage": "https://github.com/xesrevinu/opencode-jj-enforcer#readme",
+  "publishConfig": {
+    "access": "public"
+  },
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "prepublishOnly": "bun run build",
+    "test": "bun test",
+    "typecheck": "tsc --noEmit",
+    "pack:check": "npm pack --dry-run"
+  },
+  "peerDependencies": {
+    "@opencode-ai/plugin": ">=1.2.0"
+  },
+  "dependencies": {
+    "@opencode-ai/plugin": "^1.2.15"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.21",
+    "bun-types": "latest",
+    "typescript": "^5.9.3"
+  }
+}
