@@ -120,7 +120,7 @@ function normalizeCommandTokens(segment: string[]): string[] {
 }
 
 function expandHome(token: string): string {
-  const home = process.env.HOME;
+  const home = process.env["HOME"];
   if (!home) return token;
   if (token === "~") return home;
   if (token.startsWith("~/")) return path.join(home, token.slice(2));
@@ -227,12 +227,12 @@ export const JjEnforcerPlugin: Plugin = async ({ directory, worktree }) => {
         output.args && typeof output.args === "object"
           ? (output.args as Record<string, unknown>)
           : undefined;
-      const command = typeof args?.command === "string" ? args.command : "";
+      const command = typeof args?.["command"] === "string" ? args["command"] : "";
       if (!command) return;
 
       const baseDir =
-        typeof args?.workdir === "string" && args.workdir
-          ? path.resolve(args.workdir)
+        typeof args?.["workdir"] === "string" && args["workdir"]
+          ? path.resolve(args["workdir"])
           : path.resolve(directory);
       const { directories, usesGit } = extractCommandContext(command, baseDir);
       if (!usesGit) return;

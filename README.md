@@ -1,70 +1,64 @@
-# opencode-jj-enforcer
+# @xesrevinu/opencode-jj-enforcer
 
-`opencode-jj-enforcer` is an [OpenCode](https://opencode.ai) plugin that blocks `git` usage inside Jujutsu workspaces and forces agents to use `jj` instead.
+OpenCode plugin that blocks `git` usage inside Jujutsu workspaces and forces agents onto `jj`.
 
-It is intended for teams that already standardized on Jujutsu and want a hard guardrail against accidental `git` commands from agents.
+## Highlights
 
-## What it does
-
-- Inspects `bash` tool calls before execution
-- Detects Jujutsu repositories by walking upward for a `.jj/` directory
-- Blocks direct `git` commands such as `git status` and `git log`
-- Blocks `git -C <dir> ...` when any targeted directory belongs to a Jujutsu repo
-- Blocks `cd <dir> && git ...` patterns inside multi-step shell commands
-- Recognizes wrapper-style commands such as `rtk git log` so rewrite plugins cannot bypass the policy
+- inspects `bash` tool calls before execution instead of relying on post-hoc review
+- detects `.jj` roots from the workspace, `git -C`, and `cd ... && git ...` command patterns
+- blocks wrapper forms such as `rtk git ...` so rewrite plugins cannot bypass the policy
+- stays repository local with no external service or daemon requirements
+- ships as a small npm package that can also be copied directly into `.opencode/plugin`
 
 ## Install
 
-Use it as a packaged plugin in `opencode.jsonc`:
+Use the published package from `opencode.jsonc`:
 
 ```jsonc
 {
-  "plugin": ["@xesrevinu/opencode-jj-enforcer@latest"]
+  "plugin": ["@xesrevinu/opencode-jj-enforcer@latest"],
 }
 ```
 
-Then restart OpenCode.
+Restart OpenCode after updating the plugin list.
 
-## Local Source Mode
-
-If you want to iterate locally instead of using npm:
+If you want to iterate from a checkout instead of npm:
 
 ```bash
 mkdir -p .opencode/plugin
 cp plugin/jj-enforcer.ts .opencode/plugin/jj-enforcer.ts
 ```
 
-## Behavior
+## Usage
 
-The plugin checks these directory sources when deciding whether to block a command:
+The plugin checks the current workspace plus directories referenced inside the shell command. If any of them belong to a Jujutsu repository, the command is rejected and the agent is told to use `jj`.
 
-- The current OpenCode workspace directory
-- The active `workdir` passed to the `bash` tool
-- Directories referenced by `git -C ...`
-- Directories referenced by `cd ...` in the same shell command
+Examples that are blocked inside a `.jj` workspace:
 
-If any of those directories are inside a Jujutsu repo, the command is rejected with a clear error telling the agent to use `jj`.
+```bash
+git status
+git -C ../repo log
+cd ../repo && git diff
+rtk git log
+```
 
-## Plugin Ordering
+## Development
 
-This plugin is intentionally independent from rewrite plugins.
-
-For example, if another plugin rewrites `git log` to `rtk git log`, `opencode-jj-enforcer` still treats that as git usage and blocks it in `.jj` workspaces. It does not require the rewrite plugin to know anything about Jujutsu.
-
-## Local Development
+The repository uses Bun for dependency management and local commands.
 
 ```bash
 bun install
-bun run typecheck
-bun test
-bun run build
+bun run check
 ```
 
-## Publish To npm
+## Release
+
+This package uses Changesets plus the shared GitHub Actions release workflow.
 
 ```bash
-bun run build
-npm publish --access public
+bun run changeset
+bun run version-packages
+bun run release
 ```
 
 ## License
