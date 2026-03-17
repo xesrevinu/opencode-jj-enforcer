@@ -9,4 +9,5 @@ export default defineConfig({
   sourcemap: true,
   clean: true,
   fixedExtension: false,
+  exports: { all: true },
 });
