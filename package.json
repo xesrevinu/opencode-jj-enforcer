@@ -1,6 +1,6 @@
 {
   "name": "@xesrevinu/opencode-jj-enforcer",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "OpenCode plugin that enforces jj over git when a workspace contains a .jj repository.",
   "keywords": [
     "git",

@@ -1,5 +1,11 @@
 # @xesrevinu/opencode-jj-enforcer
 
+## 0.1.2
+
+### Patch Changes
+
+- c19cb9c: update release config
+
 ## 0.1.1
 
 ### Patch Changes
